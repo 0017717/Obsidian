@@ -5232,12 +5232,12 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        -- [[ MODIFIED ]] The new label in the top bar that displays the active tab's name.
+        -- [[ MODIFIED & FIXED ]] The new label in the top bar that displays the active tab's name.
         CurrentTabTitleLabel = New("TextLabel", {
             BackgroundTransparency = 1,
             Position = UDim2.fromOffset(60, 0),
             Size = UDim2.new(0, 200, 1, 0),
-            Font = Library.Scheme.Font,
+            FontFace = Library.Scheme.Font, -- <<<<<<<<<<<<<<<< FIXED: Was 'Font', now 'FontFace'
             Text = "", -- Will be updated when a tab is clicked
             TextColor3 = Library.Scheme.FontColor,
             TextSize = 18,
@@ -5867,9 +5867,11 @@ function Library:CreateWindow(WindowInfo)
                 return
             end
 
-            TweenService:Create(TabLabel, Library.TweenInfo, {
-                TextTransparency = Hovering and 0.25 or 0.5,
-            }):Play()
+            -- The TabLabel is removed in the new design, so this part is commented out.
+            -- TweenService:Create(TabLabel, Library.TweenInfo, {
+            --     TextTransparency = Hovering and 0.25 or 0.5,
+            -- }):Play()
+
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -5925,8 +5927,8 @@ function Library:CreateWindow(WindowInfo)
 
     function Window:AddKeyTab(Name)
         local TabButton: TextButton
-        local TabLabel
         local TabIcon
+        local SelectionIndicator
 
         local TabContainer
 
@@ -5934,38 +5936,31 @@ function Library:CreateWindow(WindowInfo)
             TabButton = New("TextButton", {
                 BackgroundColor3 = "MainColor",
                 BackgroundTransparency = 1,
-                Size = UDim2.new(1, 0, 0, 40),
+                Size = UDim2.fromOffset(42, 42),
                 Text = "",
                 Parent = Tabs,
             })
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 11),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12),
-                PaddingTop = UDim.new(0, 11),
+            New("UICorner", { CornerRadius = UDim.new(0, 4), Parent = TabButton })
+            
+            SelectionIndicator = New("Frame", {
+                AnchorPoint = Vector2.new(0, 0.5),
+                Position = UDim2.new(0, -5, 0.5, 0),
+                Size = UDim2.new(0, 3, 0, 24),
+                BackgroundColor3 = Library.Scheme.FontColor,
+                Visible = false,
                 Parent = TabButton,
             })
-
-            TabLabel = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(30, 0),
-                Size = UDim2.new(1, -30, 1, 0),
-                Text = Name,
-                TextSize = 16,
-                TextTransparency = 0.5,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                Parent = TabButton,
-            })
+            New("UICorner", { CornerRadius = UDim.new(1,0), Parent = SelectionIndicator})
 
             if KeyIcon then
                 TabIcon = New("ImageLabel", {
+                    AnchorPoint = Vector2.new(0.5, 0.5),
+                    Position = UDim2.fromScale(0.5, 0.5),
                     Image = KeyIcon.Url,
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = KeyIcon.ImageRectOffset,
                     ImageRectSize = KeyIcon.ImageRectSize,
-                    ImageTransparency = 0.5,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Size = UDim2.fromOffset(24, 24),
                     Parent = TabButton,
                 })
             end
@@ -6062,9 +6057,6 @@ function Library:CreateWindow(WindowInfo)
                 return
             end
 
-            TweenService:Create(TabLabel, Library.TweenInfo, {
-                TextTransparency = Hovering and 0.25 or 0.5,
-            }):Play()
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
                     ImageTransparency = Hovering and 0.25 or 0.5,
@@ -6080,15 +6072,15 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 0,
             }):Play()
-            TweenService:Create(TabLabel, Library.TweenInfo, {
-                TextTransparency = 0,
-            }):Play()
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
-                    ImageTransparency = 0,
+                    ImageColor3 = Library.Scheme.FontColor,
                 }):Play()
             end
+            
+            SelectionIndicator.Visible = true
             TabContainer.Visible = true
+            CurrentTabTitleLabel.Text = Name
 
             Library.ActiveTab = Tab
         end
@@ -6097,14 +6089,13 @@ function Library:CreateWindow(WindowInfo)
             TweenService:Create(TabButton, Library.TweenInfo, {
                 BackgroundTransparency = 1,
             }):Play()
-            TweenService:Create(TabLabel, Library.TweenInfo, {
-                TextTransparency = 0.5,
-            }):Play()
             if TabIcon then
                 TweenService:Create(TabIcon, Library.TweenInfo, {
-                    ImageTransparency = 0.5,
+                    ImageColor3 = Library.Scheme.AccentColor,
                 }):Play()
             end
+            
+            SelectionIndicator.Visible = false
             TabContainer.Visible = false
 
             Library.ActiveTab = nil
