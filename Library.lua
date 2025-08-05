@@ -5239,7 +5239,7 @@ function Library:CreateWindow(WindowInfo)
             },
         })
         New("UICorner", {
-            CornerRadius = UDim2.new(0, WindowInfo.CornerRadius - 1),
+            CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1), -- CORRECT
             Parent = MainFrame,
         })
         do
