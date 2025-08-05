@@ -5328,13 +5328,11 @@ function Library:CreateWindow(WindowInfo)
         })
 
         --// Top Right Bar
-        local RightWrapper = New("Frame", {
+       local RightWrapper = New("Frame", {
             BackgroundTransparency = 1,
             AnchorPoint = Vector2.new(0, 0.5),
-            -- [[ MODIFIED ]] Position now starts after the fixed-width sidebar.
-            Position = UDim2.new(0, 68, 0.5, 0),
-            -- [[ MODIFIED ]] Size now correctly fills the remaining space.
-            Size = UDim2.new(1, -117, 1, -16),
+            Position = UDim2.new(0.3, 8, 0.5, 0),
+            Size = UDim2.new(0.7, -57, 1, -16),
             Parent = TopBar,
         })
 
