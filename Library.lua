@@ -5287,6 +5287,7 @@ function Library:CreateWindow(WindowInfo)
         New("UIListLayout", {
             Padding = UDim.new(0, 6),
             HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            VerticalAlignment = Enum.VerticalAlignment.Bottom, -- <<<<<< ADD THIS LINE
             Parent = Tabs
         })
         Library:MakeLine(Tabs, { Position = UDim2.fromScale(1, 0), Size = UDim2.new(0, 1, 1, 0) }) -- Vertical line separator
