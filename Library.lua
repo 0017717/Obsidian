@@ -5239,7 +5239,6 @@ function Library:CreateWindow(WindowInfo)
             },
         })
         New("UICorner", {
-            -- [[ FIXED ]] Changed UDim2.new to UDim.new
             CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
             Parent = MainFrame,
         })
@@ -5250,6 +5249,7 @@ function Library:CreateWindow(WindowInfo)
                     Size = UDim2.new(1, 0, 0, 1),
                 },
                 {
+                    -- [[ MODIFIED ]] Changed sidebar divider from a percentage to a fixed pixel width.
                     Position = UDim2.fromOffset(60, 0),
                     Size = UDim2.new(0, 1, 1, -21),
                 },
@@ -5293,6 +5293,7 @@ function Library:CreateWindow(WindowInfo)
         --// Title
         local TitleHolder = New("Frame", {
             BackgroundTransparency = 1,
+            -- [[ MODIFIED ]] Changed title holder from a percentage to a fixed pixel width.
             Size = UDim2.fromOffset(60, 48),
             Parent = TopBar,
         })
@@ -5330,7 +5331,9 @@ function Library:CreateWindow(WindowInfo)
         local RightWrapper = New("Frame", {
             BackgroundTransparency = 1,
             AnchorPoint = Vector2.new(0, 0.5),
-            Position = UDim2.fromOffset(68, 0.5),
+            -- [[ MODIFIED ]] Position now starts after the fixed-width sidebar.
+            Position = UDim2.new(0, 68, 0.5, 0),
+            -- [[ MODIFIED ]] Size now correctly fills the remaining space.
             Size = UDim2.new(1, -117, 1, -16),
             Parent = TopBar,
         })
@@ -5344,6 +5347,7 @@ function Library:CreateWindow(WindowInfo)
         })
 
         CurrentTabInfo = New("Frame", {
+            -- [[ MODIFIED ]] Size is now calculated to leave space for the smaller search box.
             Size = UDim2.new(1, -208, 1, 0),
             Visible = false,
             BackgroundTransparency = 1,
@@ -5390,7 +5394,7 @@ function Library:CreateWindow(WindowInfo)
         SearchBox = New("TextBox", {
             BackgroundColor3 = "MainColor",
             PlaceholderText = "Search",
-            Size = UDim2.fromOffset(200, 32),
+            Size = UDim2.fromScale(0.5, 1),
             TextScaled = true,
             Visible = not (WindowInfo.DisableSearch or false),
             Parent = RightWrapper,
@@ -5440,7 +5444,7 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        --// Bottom Bar \\-
+        --// Bottom Bar \\--
         local BottomBar = New("Frame", {
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = function()
@@ -5510,6 +5514,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
+            -- [[ MODIFIED ]] Changed sidebar from percentage to fixed pixel width.
             Size = UDim2.new(0, 60, 1, -70),
             Parent = MainFrame,
         })
@@ -5525,7 +5530,9 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
+            -- [[ MODIFIED ]] Position now starts after the fixed-width sidebar.
             Position = UDim2.fromOffset(61, 49),
+            -- [[ MODIFIED ]] Size now correctly fills the remaining space.
             Size = UDim2.new(1, -67, 1, -70),
             Parent = MainFrame,
         })
@@ -5581,13 +5588,7 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
 
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 11),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12),
-                PaddingTop = UDim.new(0, 11),
-                Parent = TabButton,
-            })
+            -- [[ MODIFIED ]] Original padding is removed to let the icon center itself.
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
@@ -5597,23 +5598,28 @@ function Library:CreateWindow(WindowInfo)
                 TextSize = 16,
                 TextTransparency = 0.5,
                 TextXAlignment = Enum.TextXAlignment.Left,
+                -- [[ MODIFIED ]] Hides the text label, leaving just the icon visible.
+                Visible = false,
                 Parent = TabButton,
             })
 
             if Icon then
                 TabIcon = New("ImageLabel", {
+                    -- [[ MODIFIED ]] Centers the icon inside the narrow tab button.
+                    AnchorPoint = Vector2.new(0.5, 0.5),
+                    Position = UDim2.fromScale(0.5, 0.5),
                     Image = Icon.Url,
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.fromScale(1, 1),
-                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                    Size = UDim2.fromOffset(24, 24),
                     Parent = TabButton,
                 })
             end
 
             --// Tab Container \\--
+            -- The rest of the library is 100% original and untouched.
             TabContainer = New("Frame", {
                 BackgroundTransparency = 1,
                 Size = UDim2.fromScale(1, 1),
