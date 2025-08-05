@@ -5239,7 +5239,7 @@ function Library:CreateWindow(WindowInfo)
             },
         })
         New("UICorner", {
-            CornerRadius = UDim.new(0, WindowInfo.CornerRadius - 1),
+            CornerRadius = UDim2.new(0, WindowInfo.CornerRadius - 1),
             Parent = MainFrame,
         })
         do
@@ -5249,7 +5249,7 @@ function Library:CreateWindow(WindowInfo)
                     Size = UDim2.new(1, 0, 0, 1),
                 },
                 {
-                    -- [[ MODIFIED ]] Changed sidebar divider from Scale to a fixed Offset
+                    -- [[ MODIFIED ]] Changed sidebar divider from a percentage to a fixed pixel width.
                     Position = UDim2.fromOffset(60, 0),
                     Size = UDim2.new(0, 1, 1, -21),
                 },
@@ -5293,7 +5293,7 @@ function Library:CreateWindow(WindowInfo)
         --// Title
         local TitleHolder = New("Frame", {
             BackgroundTransparency = 1,
-            -- [[ MODIFIED ]] Changed title holder from Scale to fixed Offset to match sidebar
+            -- [[ MODIFIED ]] Changed title holder from a percentage to a fixed pixel width.
             Size = UDim2.fromOffset(60, 48),
             Parent = TopBar,
         })
@@ -5331,9 +5331,9 @@ function Library:CreateWindow(WindowInfo)
         local RightWrapper = New("Frame", {
             BackgroundTransparency = 1,
             AnchorPoint = Vector2.new(0, 0.5),
-            -- [[ MODIFIED ]] Changed Position to match new sidebar width
-            Position = UDim2.fromOffset(68, 0.5),
-            -- [[ MODIFIED ]] Changed Size to fill remaining space
+            -- [[ MODIFIED ]] Position now starts after the fixed-width sidebar.
+            Position = UDim2.new(0, 68, 0.5, 0),
+            -- [[ MODIFIED ]] Size now correctly fills the remaining space.
             Size = UDim2.new(1, -117, 1, -16),
             Parent = TopBar,
         })
@@ -5347,8 +5347,8 @@ function Library:CreateWindow(WindowInfo)
         })
 
         CurrentTabInfo = New("Frame", {
-            -- [[ MODIFIED ]] Size is now calculated based on the smaller search box
-            Size = UDim2.new(1, -208, 1, 0), -- 200px for search, 8px for padding
+            -- [[ MODIFIED ]] Size is now calculated to leave space for the smaller search box.
+            Size = UDim2.new(1, -208, 1, 0),
             Visible = false,
             BackgroundTransparency = 1,
             Parent = RightWrapper,
@@ -5394,7 +5394,7 @@ function Library:CreateWindow(WindowInfo)
         SearchBox = New("TextBox", {
             BackgroundColor3 = "MainColor",
             PlaceholderText = "Search",
-            -- [[ MODIFIED ]] Changed SearchBox from Scale to a smaller fixed Offset
+            -- [[ MODIFIED ]] Changed search box to a smaller, fixed size.
             Size = UDim2.fromOffset(200, 32),
             TextScaled = true,
             Visible = not (WindowInfo.DisableSearch or false),
@@ -5515,7 +5515,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            -- [[ MODIFIED ]] Changed sidebar Size from Scale to a fixed Offset
+            -- [[ MODIFIED ]] Changed sidebar from percentage to fixed pixel width.
             Size = UDim2.new(0, 60, 1, -70),
             Parent = MainFrame,
         })
@@ -5526,14 +5526,15 @@ function Library:CreateWindow(WindowInfo)
 
         --// Container \\--
         Container = New("Frame", {
-            AnchorPoint = Vector2.new(1, 0),
+            AnchorPoint = Vector2.new(0, 0),
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 1)
             end,
             Name = "Container",
-            Position = UDim2.new(1, 0, 0, 49),
-            -- [[ MODIFIED ]] Changed container Size to fill remaining space
-            Size = UDim2.new(1, -61, 1, -70),
+            -- [[ MODIFIED ]] Position now starts after the fixed-width sidebar.
+            Position = UDim2.fromOffset(61, 49),
+            -- [[ MODIFIED ]] Size now correctly fills the remaining space.
+            Size = UDim2.new(1, -67, 1, -70),
             Parent = MainFrame,
         })
 
@@ -5588,7 +5589,13 @@ function Library:CreateWindow(WindowInfo)
                 Parent = Tabs,
             })
 
-            -- No UIPadding is needed for centered icons.
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 11),
+                PaddingLeft = UDim.new(0, 12),
+                PaddingRight = UDim.new(0, 12),
+                PaddingTop = UDim.new(0, 11),
+                Parent = TabButton,
+            })
 
             TabLabel = New("TextLabel", {
                 BackgroundTransparency = 1,
@@ -5598,22 +5605,18 @@ function Library:CreateWindow(WindowInfo)
                 TextSize = 16,
                 TextTransparency = 0.5,
                 TextXAlignment = Enum.TextXAlignment.Left,
-                -- [[ MODIFIED ]] Hide the text label.
-                Visible = false,
                 Parent = TabButton,
             })
 
             if Icon then
                 TabIcon = New("ImageLabel", {
-                    -- [[ MODIFIED ]] Center the icon within the narrow tab button.
-                    AnchorPoint = Vector2.new(0.5, 0.5),
-                    Position = UDim2.fromScale(0.5, 0.5),
                     Image = Icon.Url,
                     ImageColor3 = "AccentColor",
                     ImageRectOffset = Icon.ImageRectOffset,
                     ImageRectSize = Icon.ImageRectSize,
                     ImageTransparency = 0.5,
-                    Size = UDim2.fromOffset(24, 24),
+                    Size = UDim2.fromScale(1, 1),
+                    SizeConstraint = Enum.SizeConstraint.RelativeYY,
                     Parent = TabButton,
                 })
             end
